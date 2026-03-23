@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wine Web Series</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f0f0f, #1a0010);
+    color: #fff;
+}
+
+:root {
+    --pink: #ff2e88;
+    --pink-light: #ff5ca8;
+}
+
+/* BANNER */
+header {
+    background: url('screenshots/banner.jpg') no-repeat center/cover;
+    height: 260px;
+    position: relative;
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, #0f0f0f, transparent);
+}
+
+header h1 {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 16px;
+    border-left: 4px solid var(--pink);
+    border-radius: 6px;
+    font-size: clamp(22px, 5vw, 34px);
+    max-width: 90%;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(255,46,136,0.2);
+}
+
+h2, h3 {
+    color: var(--pink-light);
+}
+
+/* BUTTONS */
+button {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px 5px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.watch-btn {
+    background: linear-gradient(45deg, var(--pink), var(--pink-light));
+    color: white;
+    box-shadow: 0 0 15px rgba(255,46,136,0.5);
+}
+
+.download-btn {
+    background: var(--pink);
+    color: white;
+}
+
+.backup-btn {
+    background: #444;
+    color: white;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* GALLERY */
+.screenshots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.screenshots img {
+    width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.screenshots img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--pink);
+}
+
+/* MODALS */
+.modal, .videoModal {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 999;
+}
+
+.modal img {
+    max-width: 90%;
+    margin: 5% auto;
+    display: block;
+}
+
+.videoModal iframe {
+    width: 90%;
+    max-width: 800px;
+    height: 450px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 30px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Wine<br>
+<span style="font-size:0.7em;color:#ff5ca8;">Web Series</span>
+</h1>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<p><b>Title:</b> Wine Web Series</p>
+<p><b>Genre:</b> 🔞</p>
+<p><b>Release Date:</b> 20 March 2026</p>
+<p><b>Language:</b> Hindi</p>
+<p><b>Quality:</b> 1080p WEB-DL</p>
+<p><b>Watermark:</b> No</p>
+<p><b>Audio:</b> AAC 2.0CH</p>
+<p><b>Format:</b> MKV</p>
+<p><b>Size:</b> Various</p>
+
+<h3>Storyline</h3>
+<p>
+When Ritika collides with a man completely opposite to her nature, their initial hatred slowly turns into a dangerous attraction. As emotions intensify, she begins questioning her life and relationships — but is he really who he claims to be?
+</p>
+
+<h3>Cast</h3>
+<ul>
+<li>Navina Bole (Ritika)</li>
+<li>Gautam Handa (Tanuj)</li>
+<li>Nishad Vaidya (Sameer)</li>
+<li>Mahi Khan</li>
+</ul>
+
+<button class="watch-btn" onclick="openVideo()">▶ Watch Preview</button>
+
+</div>
+
+<h2>Screenshots</h2>
+<div class="screenshots" id="gallery"></div>
+
+<h2>Download</h2>
+<button class="download-btn" onclick="startDownload()">Download</button>
+<button class="backup-btn" onclick="startBackup()">Backup Download</button>
+
+<div id="count"></div>
+
+</div>
+
+<!-- IMAGE MODAL -->
+<div id="imgModal" class="modal" onclick="this.style.display='none'">
+<img id="modalImg">
+</div>
+
+<!-- VIDEO MODAL -->
+<div id="videoModal" class="videoModal">
+<span class="close" onclick="closeVideo()">&times;</span>
+<iframe id="videoFrame"
+allow="autoplay; encrypted-media"
+allowfullscreen></iframe>
+</div>
+
+<script>
+// LOAD IMAGES
+const gallery = document.getElementById("gallery");
+
+for (let i = 1; i <= 50; i++) {
+    let img = document.createElement("img");
+    img.src = `screenshots/${i}.jpg`;
+    img.loading = "lazy";
+
+    img.onerror = () => img.remove();
+
+    img.onclick = () => {
+        document.getElementById("imgModal").style.display = "block";
+        document.getElementById("modalImg").src = img.src;
+    };
+
+    gallery.appendChild(img);
+}
+
+// VIDEO
+function openVideo() {
+    document.getElementById("videoModal").style.display = "block";
+    document.getElementById("videoFrame").src =
+    "https://www.youtube.com/embed/RrCat4FSjRQ?autoplay=1&mute=1";
+}
+
+function closeVideo() {
+    document.getElementById("videoModal").style.display = "none";
+    document.getElementById("videoFrame").src = "";
+}
+
+// DOWNLOAD
+function startDownload() {
+    let t = 10;
+    let c = document.getElementById("count");
+
+    let timer = setInterval(() => {
+        t--;
+        c.innerHTML = "Opening download in " + t + " sec";
+
+        if (t <= 0) {
+            clearInterval(timer);
+            window.location.href = "https://drive.google.com/drive/folders/1rZNSk0Xdtre0nTbNhPN8jtgBC9vgu_Vw";
+        }
+    }, 1000);
+}
+
+// BACKUP
+function startBackup() {
+    let t = 10;
+    let c = document.getElementById("count");
+
+    let timer = setInterval(() => {
+        t--;
+        c.innerHTML = "Opening backup in " + t + " sec";
+
+        if (t <= 0) {
+            clearInterval(timer);
+            window.location.href = "#";
+        }
+    }, 1000);
+}
+</script>
+
+</body>
+</html>
